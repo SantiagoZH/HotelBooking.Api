@@ -12,7 +12,7 @@ public class HotelService
         _hotelRepository = hotelRepository;
     }
 
-    public Task<IEnumerable<Hotel>> GetAllHotelsAsync() => _hotelRepository.GetAllAsync();
+    public async Task<IEnumerable<Hotel>> GetAllHotelsAsync() => await _hotelRepository.GetAllAsync();
 
     public async Task<Hotel?> GetHotelByIdAsync(int id) => await _hotelRepository.GetByIdAsync(id);
 

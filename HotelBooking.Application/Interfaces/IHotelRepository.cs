@@ -1,4 +1,5 @@
 ﻿using HotelBooking.Domain.Entities;
+
 namespace HotelBooking.Application.Interfaces;
 
 public interface IHotelRepository
@@ -8,4 +9,5 @@ public interface IHotelRepository
     Task AddAsync(Hotel hotel);
     Task UpdateAsync(Hotel hotel);
     Task DeleteAsync(int id);
+    Task<IEnumerable<Hotel>> GetHotelsByCityAsync(string city);
 }

@@ -1,5 +1,4 @@
-﻿
-using HotelBooking.Application.Services;
+﻿using HotelBooking.Application.Services;
 using HotelBooking.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
