@@ -10,26 +10,34 @@ namespace HotelBooking.Infrastructure.Repositories;
 public class HotelRepository : IHotelRepository
 {
     private readonly HotelBookingDbContext _context;
-    private readonly List<Hotel> _hotels = new(); // Simulación de base de datos en memoria
     public HotelRepository(HotelBookingDbContext context)
     {
         _context = context;
+        
     }
-    public async Task<IEnumerable<Hotel>> GetAllAsync() => await Task.FromResult(_hotels);
+    public async Task<IEnumerable<Hotel>> GetAllAsync() => await Task.FromResult(_context.Hotels);
 
     public async Task<Hotel?> GetByIdAsync(int id) =>
-        await Task.FromResult(_hotels.FirstOrDefault(h => h.Id == id));
+        await Task.FromResult(_context.Hotels.FirstOrDefault(h => h.Id == id));
 
     public async Task AddAsync(Hotel hotel)
     {
-        hotel.Id = _hotels.Count + 1;
-        _hotels.Add(hotel);
-        await Task.CompletedTask;
+        try
+        {
+            _context.Hotels.Add(hotel);
+            await Task.CompletedTask;
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+       
     }
 
     public async Task UpdateAsync(Hotel hotel)
     {
-        var existingHotel = _hotels.FirstOrDefault(h => h.Id == hotel.Id);
+        var existingHotel = _context.Hotels.FirstOrDefault(h => h.Id == hotel.Id);
         if (existingHotel != null)
         {
             existingHotel.Name = hotel.Name;
@@ -43,9 +51,9 @@ public class HotelRepository : IHotelRepository
 
     public async Task DeleteAsync(int id)
     {
-        var hotel = _hotels.FirstOrDefault(h => h.Id == id);
+        var hotel = _context.Hotels.FirstOrDefault(h => h.Id == id);
         if (hotel != null)
-            _hotels.Remove(hotel);
+            _context.Hotels.Remove(hotel);
 
         await Task.CompletedTask;
     }

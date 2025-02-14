@@ -28,14 +28,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IHotelRepository, HotelRepository>();
-builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
-builder.Services.AddScoped<HotelService>();
-builder.Services.AddScoped<ReservationService>();
-builder.Services.AddScoped<SearchService>();
-builder.Services.AddScoped<IRoomRepository, RoomRepository>();
-builder.Services.AddScoped<RoomService>();
-builder.Services.AddScoped<IGuestRepository, GuestRepository>();
-builder.Services.AddScoped<GuestService>();
+builder.Services.AddScoped<IHotelService, HotelService>();
+
 
 var app = builder.Build();
 

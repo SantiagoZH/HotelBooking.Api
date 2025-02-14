@@ -9,5 +9,4 @@ public interface IHotelRepository
     Task AddAsync(Hotel hotel);
     Task UpdateAsync(Hotel hotel);
     Task DeleteAsync(int id);
-    Task<IEnumerable<Hotel>> GetHotelsByCityAsync(string city);
 }

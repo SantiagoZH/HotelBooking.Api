@@ -5,10 +5,10 @@ namespace HotelBooking.Application.Services
 {
     public class SearchService
     {
-        private readonly IHotelRepository _hotelRepository;
+        private readonly IHotelService _hotelRepository;
         private readonly IRoomRepository _roomRepository;
 
-        public SearchService(IHotelRepository hotelRepository, IRoomRepository roomRepository)
+        public SearchService(IHotelService hotelRepository, IRoomRepository roomRepository)
         {
             _hotelRepository = hotelRepository;
             _roomRepository = roomRepository;

@@ -1,4 +1,5 @@
-﻿using HotelBooking.Application.Services;
+﻿using HotelBooking.Application.Interfaces;
+using HotelBooking.Application.Services;
 using HotelBooking.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +9,9 @@ namespace HotelBooking.Api.Controllers;
 [Route("api/hotels")]
 public class HotelController : ControllerBase
 {
-    private readonly HotelService _hotelService;
+    private readonly IHotelService _hotelService;
 
-    public HotelController(HotelService hotelService)
+    public HotelController(IHotelService hotelService)
     {
         _hotelService = hotelService;
     }
@@ -22,10 +23,18 @@ public class HotelController : ControllerBase
         return Ok(hotels);
     }
 
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var hotel = await _hotelService.GetHotelByIdAsync(id);
+        if (hotel == null) return NotFound();
+        return Ok(hotel);
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateHotel([FromBody] Hotel hotel)
     {
-        await _hotelService.AddHotelAsync(hotel.Name, hotel.Address, hotel.City, hotel.CommissionRate);
-        return CreatedAtAction(nameof(GetAll), new { id = hotel.Id }, hotel);
+        var createdHotel = await _hotelService.AddHotelAsync(hotel.Name, hotel.Address, hotel.City, hotel.CommissionRate);
+        return CreatedAtAction(nameof(GetById), new { id = createdHotel.Id }, createdHotel);
     }
 }
