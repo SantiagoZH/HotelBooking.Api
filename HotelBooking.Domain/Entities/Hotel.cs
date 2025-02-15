@@ -16,4 +16,8 @@ public class Hotel
         City = city;
         CommissionRate = commissionRate;
     }
+    public void ToggleActiveStatus()
+    {
+        IsActive = !IsActive;
+    }
 }

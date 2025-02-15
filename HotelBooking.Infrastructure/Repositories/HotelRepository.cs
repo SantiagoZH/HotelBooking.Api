@@ -46,6 +46,8 @@ public class HotelRepository : IHotelRepository
             existingHotel.CommissionRate = hotel.CommissionRate;
             existingHotel.IsActive = hotel.IsActive;
         }
+        await _context.SaveChangesAsync();
+
         await Task.CompletedTask;
     }
 
@@ -54,6 +56,7 @@ public class HotelRepository : IHotelRepository
         var hotel = _context.Hotels.FirstOrDefault(h => h.Id == id);
         if (hotel != null)
             _context.Hotels.Remove(hotel);
+        await _context.SaveChangesAsync();
 
         await Task.CompletedTask;
     }
@@ -62,5 +65,19 @@ public class HotelRepository : IHotelRepository
         return await  _context.Hotels
             .Where(h => h.City == city)
             .ToListAsync();
+    }
+    public async Task<Hotel?> GetHotelByIdAsync(int id)
+    {
+        return await _context.Hotels.FindAsync(id);
+    }
+
+    public async Task<bool> ToggleHotelStatusAsync(int id)
+    {
+        var hotel = await _context.Hotels.FindAsync(id);
+        if (hotel == null) return false;
+
+        hotel.ToggleActiveStatus();
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

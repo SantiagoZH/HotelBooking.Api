@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelBooking.Api", "HotelBooking.Api\HotelBooking.Api.csproj", "{4CD1EE24-B3E9-4A85-A6F4-08F23488DA03}"
 EndProject
@@ -10,8 +10,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelBooking.Domain", "HotelBooking.Domain\HotelBooking.Domain.csproj", "{B5115950-37AD-4A73-BE24-7A0EDA69811C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelBooking.Infrastructure", "HotelBooking.Infrastructure\HotelBooking.Infrastructure.csproj", "{BF6E11E3-CE06-43B2-B143-31FCA566B4BE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelBooking.Tests", "HotelBooking.Tests\HotelBooking.Tests.csproj", "{A47845D0-E846-4DA4-AC48-374653CF2660}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,12 +33,11 @@ Global
 		{BF6E11E3-CE06-43B2-B143-31FCA566B4BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF6E11E3-CE06-43B2-B143-31FCA566B4BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF6E11E3-CE06-43B2-B143-31FCA566B4BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A47845D0-E846-4DA4-AC48-374653CF2660}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A47845D0-E846-4DA4-AC48-374653CF2660}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A47845D0-E846-4DA4-AC48-374653CF2660}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A47845D0-E846-4DA4-AC48-374653CF2660}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {08F4145D-9FE4-4FE8-A5EA-676876D422A8}
 	EndGlobalSection
 EndGlobal

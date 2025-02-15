@@ -37,4 +37,11 @@ public class HotelController : ControllerBase
         var createdHotel = await _hotelService.AddHotelAsync(hotel.Name, hotel.Address, hotel.City, hotel.CommissionRate);
         return CreatedAtAction(nameof(GetById), new { id = createdHotel.Id }, createdHotel);
     }
+    [HttpPatch("{id}/toggle-status")]
+    public async Task<IActionResult> ToggleHotelStatus(int id)
+    {
+        var success = await _hotelService.ToggleHotelStatusAsync(id);
+        if (!success) return NotFound();
+        return NoContent();
+    }
 }

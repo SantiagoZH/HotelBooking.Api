@@ -1,8 +1,7 @@
 ﻿using HotelBooking.Application.Services;
 using HotelBooking.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using HotelBooking.Application.Interfaces;
 
 namespace HotelBooking.Api.Controllers
 {
@@ -10,9 +9,9 @@ namespace HotelBooking.Api.Controllers
     [ApiController]
     public class RoomController : ControllerBase
     {
-        private readonly RoomService _roomService;
+        private readonly IRoomService _roomService;
 
-        public RoomController(RoomService roomService)
+        public RoomController(IRoomService roomService)
         {
             _roomService = roomService;
         }

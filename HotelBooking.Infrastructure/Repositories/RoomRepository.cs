@@ -17,7 +17,7 @@ namespace HotelBooking.Infrastructure.Repositories
 
         public async Task<Room> AddRoomAsync(Room room)
         {
-            _context.Rooms.Add(room);
+            await _context.Rooms.AddAsync(room);
             await _context.SaveChangesAsync();
             return room;
         }

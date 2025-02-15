@@ -2,8 +2,6 @@
 using HotelBooking.Domain.Entities;
 using HotelBooking.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace HotelBooking.Infrastructure.Repositories
 {
@@ -16,51 +14,61 @@ namespace HotelBooking.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Reservation> AddReservationAsync(Reservation reservation)
+        public async Task<Reservation?> GetByIdAsync(int id)
         {
-            _context.Reservations.Add(reservation);
-            await _context.SaveChangesAsync();
-            return reservation;
+            return await _context.Reservations
+                .Include(r => r.Hotel)
+                .Include(r => r.Room)
+                .Include(r => r.Guest)
+                .FirstOrDefaultAsync(r => r.Id == id);
         }
 
-        public async Task<IEnumerable<Reservation>> GetReservationsAsync()
+        public async Task<IEnumerable<Reservation>> GetAllAsync()
         {
-            return await _context.Reservations.Include(r => r.Hotel)
-                                              .Include(r => r.Room)
-                                              .Include(r => r.Guest)
-                                              .ToListAsync();
-        }
-
-        public async Task<Reservation?> GetReservationByIdAsync(int reservationId)
-        {
-            return await _context.Reservations.Include(r => r.Hotel)
-                                              .Include(r => r.Room)
-                                              .Include(r => r.Guest)
-                                              .FirstOrDefaultAsync(r => r.Id == reservationId);
-        }
-
-        public async Task<IEnumerable<Reservation>> GetReservationsByGuestAsync(int guestId)
-        {
-            return await _context.Reservations.Where(r => r.GuestId == guestId).ToListAsync();
+            return await _context.Reservations
+                .Include(r => r.Hotel)
+                .Include(r => r.Room)
+                .Include(r => r.Guest)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Reservation>> GetReservationsByHotelAsync(int hotelId)
         {
-            return await _context.Reservations.Where(r => r.HotelId == hotelId).ToListAsync();
+            return await _context.Reservations
+                .Where(r => r.HotelId == hotelId)
+                .Include(r => r.Guest)
+                .ToListAsync();
         }
 
-        public async Task<bool> UpdateReservationAsync(Reservation reservation)
+        public async Task<IEnumerable<Reservation>> GetReservationsByGuestAsync(int guestId)
+        {
+            return await _context.Reservations
+                .Where(r => r.GuestId == guestId)
+                .Include(r => r.Hotel)
+                .Include(r => r.Room)
+                .ToListAsync();
+        }
+
+        public async Task AddAsync(Reservation reservation)
+        {
+            _context.Reservations.Add(reservation);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(Reservation reservation)
         {
             _context.Reservations.Update(reservation);
-            return await _context.SaveChangesAsync() > 0;
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> DeleteReservationAsync(int reservationId)
+        public async Task DeleteAsync(int id)
         {
-            var reservation = await _context.Reservations.FindAsync(reservationId);
-            if (reservation == null) return false;
-            _context.Reservations.Remove(reservation);
-            return await _context.SaveChangesAsync() > 0;
+            var reservation = await _context.Reservations.FindAsync(id);
+            if (reservation != null)
+            {
+                _context.Reservations.Remove(reservation);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

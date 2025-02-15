@@ -1,4 +1,4 @@
-﻿using HotelBooking.Application.Services;
+﻿using HotelBooking.Application.Interfaces;
 using HotelBooking.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -6,67 +6,53 @@ using System.Threading.Tasks;
 
 namespace HotelBooking.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/reservations")]
     public class ReservationController : ControllerBase
     {
-        private readonly ReservationService _reservationService;
+        private readonly IReservationService _reservationService;
 
-        public ReservationController(ReservationService reservationService)
+        public ReservationController(IReservationService reservationService)
         {
             _reservationService = reservationService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateReservation([FromBody] Reservation reservation)
-        {
-            var newReservation = await _reservationService.CreateReservationAsync(reservation);
-            return CreatedAtAction(nameof(GetReservationById), new { reservationId = newReservation.Id }, newReservation);
-        }
-
         [HttpGet]
-        public async Task<IActionResult> GetAllReservations()
+        public async Task<ActionResult<IEnumerable<Reservation>>> GetAllReservations()
         {
-            var reservations = await _reservationService.GetAllReservationsAsync();
-            return Ok(reservations);
+            return Ok(await _reservationService.GetAllReservationsAsync());
         }
 
-        [HttpGet("{reservationId}")]
-        public async Task<IActionResult> GetReservationById(int reservationId)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Reservation>> GetReservation(int id)
         {
-            var reservation = await _reservationService.GetReservationByIdAsync(reservationId);
+            var reservation = await _reservationService.GetReservationByIdAsync(id);
             if (reservation == null) return NotFound();
             return Ok(reservation);
         }
 
-        [HttpGet("guest/{guestId}")]
-        public async Task<IActionResult> GetReservationsByGuest(int guestId)
+        [HttpPost]
+        public async Task<ActionResult> CreateReservation([FromBody] Reservation reservation)
         {
-            var reservations = await _reservationService.GetReservationsByGuestAsync(guestId);
-            return Ok(reservations);
+            var success = await _reservationService.CreateReservationAsync(reservation);
+            if (!success) return BadRequest("Failed to create reservation.");
+            return CreatedAtAction(nameof(GetReservation), new { id = reservation.Id }, reservation);
         }
 
-        [HttpGet("hotel/{hotelId}")]
-        public async Task<IActionResult> GetReservationsByHotel(int hotelId)
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateReservation(int id, [FromBody] Reservation reservation)
         {
-            var reservations = await _reservationService.GetReservationsByHotelAsync(hotelId);
-            return Ok(reservations);
-        }
-
-        [HttpPut("{reservationId}")]
-        public async Task<IActionResult> UpdateReservation(int reservationId, [FromBody] Reservation reservation)
-        {
-            reservation.Id = reservationId;
-            var result = await _reservationService.UpdateReservationAsync(reservation);
-            if (!result) return NotFound();
+            if (id != reservation.Id) return BadRequest("ID mismatch.");
+            var success = await _reservationService.UpdateReservationAsync(reservation);
+            if (!success) return NotFound();
             return NoContent();
         }
 
-        [HttpDelete("{reservationId}")]
-        public async Task<IActionResult> DeleteReservation(int reservationId)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteReservation(int id)
         {
-            var result = await _reservationService.DeleteReservationAsync(reservationId);
-            if (!result) return NotFound();
+            var success = await _reservationService.DeleteReservationAsync(id);
+            if (!success) return NotFound();
             return NoContent();
         }
     }

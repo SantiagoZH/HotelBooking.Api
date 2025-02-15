@@ -18,6 +18,6 @@ namespace HotelBooking.Domain.Entities
 
         public string Location { get; set; } 
 
-        public Hotel Hotel { get; set; }
+        public virtual Hotel? Hotel { get; set; }
     }
 }
