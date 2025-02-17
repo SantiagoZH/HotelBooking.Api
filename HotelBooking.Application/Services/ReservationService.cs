@@ -41,7 +41,7 @@ namespace HotelBooking.Application.Services
 
             var reservation = new Reservation(hotelId, roomId, checkIn, checkOut, nameContactEmergency, phoneContactEmergency, 0);
 
-            // Asociar múltiples huéspedes
+         
             foreach (var guestDto in guests)
             {
                 var guest = new Guest

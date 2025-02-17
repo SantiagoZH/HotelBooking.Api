@@ -32,7 +32,7 @@ namespace HotelBooking.Infrastructure.Repositories
         public async Task<IEnumerable<Guest>> GetGuestsByReservationAsync(int reservationId)
         {
             return await _context.Guests
-                .Where(g => g.Reservations.Any(r => r.Id == reservationId)) // ✅ Corrección
+                .Where(g => g.Reservations.Any(r => r.Id == reservationId)) 
                 .ToListAsync();
         }
 

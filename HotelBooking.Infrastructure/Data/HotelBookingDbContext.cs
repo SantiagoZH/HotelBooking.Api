@@ -22,26 +22,26 @@ namespace HotelBooking.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // ✅ Relación: Un Hotel tiene muchas Reservaciones
+          
             modelBuilder.Entity<Reservation>()
                 .HasOne(r => r.Hotel)
                 .WithMany()
                 .HasForeignKey(r => r.HotelId);
 
-            // ✅ Relación: Una Room tiene muchas Reservaciones
+           
             modelBuilder.Entity<Reservation>()
                 .HasOne(r => r.Room)
                 .WithMany()
                 .HasForeignKey(r => r.RoomId);
 
-            // ✅ Relación Many-to-Many entre Reservation y Guest con tabla intermedia
+           
             modelBuilder.Entity<Reservation>()
                 .HasMany(r => r.Guests)
                 .WithMany(g => g.Reservations)
                 .UsingEntity<Dictionary<string, object>>(
-                    "ReservationGuest", // Nombre de la tabla intermedia
-                    j => j.HasOne<Guest>().WithMany().HasForeignKey("GuestId"),  // FK hacia Guest
-                    j => j.HasOne<Reservation>().WithMany().HasForeignKey("ReservationId") // FK hacia Reservation
+                    "ReservationGuest",
+                    j => j.HasOne<Guest>().WithMany().HasForeignKey("GuestId"),  
+                    j => j.HasOne<Reservation>().WithMany().HasForeignKey("ReservationId") 
                 );
         }
     }

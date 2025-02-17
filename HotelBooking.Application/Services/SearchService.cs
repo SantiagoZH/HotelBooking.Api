@@ -16,11 +16,11 @@ namespace HotelBooking.Application.Services
 
         public async Task<IEnumerable<Hotel>> SearchHotelsAsync(string city, DateTime checkIn, DateTime checkOut, int guests)
         {
-            // 1️⃣ Buscar hoteles en la ciudad
+   
             var hotels = await _hotelRepository.GetHotelsByCityAsync(city);
             var availableHotels = new List<Hotel>();
 
-            // 2️⃣ Verificar disponibilidad de habitaciones
+
             foreach (var hotel in hotels)
             {
                 var availableRooms = await _roomRepository.GetAvailableRoomsByHotelAsync(hotel.Id, checkIn, checkOut, guests);

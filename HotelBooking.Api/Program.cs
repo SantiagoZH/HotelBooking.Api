@@ -24,7 +24,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicy, policy =>
     {
-        policy.WithOrigins("https://localhost:7205") // Agrega aquí el frontend permitido
+        policy.WithOrigins("https://localhost:7205") 
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
@@ -41,17 +41,17 @@ builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
-// Configuración de autenticación JWT
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.RequireHttpsMetadata = false; // Si estás en desarrollo sin HTTPS
+        options.RequireHttpsMetadata = false; 
         options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = false, // Puedes poner true si estás validando un Issuer específico
-            ValidateAudience = false, // Puedes poner true si estás validando un Audience específico
-            ValidateLifetime = true,  // Validamos la expiración del token
+            ValidateIssuer = false,
+            ValidateAudience = false, 
+            ValidateLifetime = true,  
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
     });
