@@ -30,14 +30,36 @@ namespace HotelBooking.Api.Controllers
             if (reservation == null) return NotFound();
             return Ok(reservation);
         }
-
         [HttpPost]
-        public async Task<ActionResult> CreateReservation([FromBody] Reservation reservation)
+        public async Task<IActionResult> CreateReservation([FromBody] CreateReservationRequest request)
         {
-            var success = await _reservationService.CreateReservationAsync(reservation);
-            if (!success) return BadRequest("Failed to create reservation.");
-            return CreatedAtAction(nameof(GetReservation), new { id = reservation.Id }, reservation);
+            var success = await _reservationService.CreateReservationAsync(
+                request.HotelId,
+                request.RoomId,
+                request.CheckInDate,
+                request.CheckOutDate,
+                request.NameContactEmergency, 
+                request.PhoneContactEmergency,
+                request.customerEmail,
+                request.Guests);
+
+            if (!success) return BadRequest("Reservation could not be created.");
+            return Ok("Reservation successfully created.");
         }
+
+        public class CreateReservationRequest
+        {
+            public int HotelId { get; set; }
+            public int RoomId { get; set; }
+            public DateTime CheckInDate { get; set; }
+            public DateTime CheckOutDate { get; set; }
+            public string NameContactEmergency { get; set; }  
+            public string PhoneContactEmergency { get; set; }  
+            public string customerEmail { get; set; }
+            public List<Guest> Guests { get; set; }
+        }
+
+
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateReservation(int id, [FromBody] Reservation reservation)
@@ -56,4 +78,5 @@ namespace HotelBooking.Api.Controllers
             return NoContent();
         }
     }
+
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace HotelBooking.Application.Services
 {
-    public class GuestService
+    public class GuestService: IGuestService
     {
         private readonly IGuestRepository _guestRepository;
 

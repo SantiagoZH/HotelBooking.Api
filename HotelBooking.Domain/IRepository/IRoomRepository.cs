@@ -11,6 +11,6 @@ namespace HotelBooking.Application.Interfaces
         Task<Room?> GetRoomByIdAsync(int roomId);
         Task<bool> UpdateRoomAsync(Room room);
         Task<bool> DeleteRoomAsync(int roomId);
-        //Task<IEnumerable<Room>> GetAvailableRoomsByHotelAsync(int hotelId, DateTime checkIn, DateTime checkOut, int guests);
+        Task<IEnumerable<Room>> GetAvailableRoomsByHotelAsync(int hotelId, DateTime checkIn, DateTime checkOut, int guests);
     }
 }

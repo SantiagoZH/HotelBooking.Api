@@ -47,13 +47,16 @@ namespace HotelBooking.Infrastructure.Repositories
         }
 
 
-        //public async Task<IEnumerable<Room>> GetAvailableRoomsByHotelAsync(object id, DateTime checkIn, DateTime checkOut, int guests)
-        //{
-        //    if (id is int hotelId)
-        //    {
-        //        return await GetAvailableRoomsByHotelAsync(hotelId, checkIn, checkOut, guests);
-        //    }
-        //    return Enumerable.Empty<Room>();
-        //}
+        public async Task<IEnumerable<Room>> GetAvailableRoomsByHotelAsync(int hotelId, DateTime checkIn, DateTime checkOut, int guests)
+        {
+            return await _context.Rooms
+                .Where(r => r.HotelId == hotelId &&
+                            r.Capacity >= guests &&
+                            r.IsAvailable &&
+                            !_context.Reservations.Any(res =>
+                                res.RoomId == r.Id &&
+                                ((res.CheckInDate <= checkOut && res.CheckOutDate >= checkIn))))
+                .ToListAsync();
+        }
     }
 }

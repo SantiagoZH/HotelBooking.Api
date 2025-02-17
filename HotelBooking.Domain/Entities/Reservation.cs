@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace HotelBooking.Domain.Entities
 {
@@ -11,46 +10,46 @@ namespace HotelBooking.Domain.Entities
         public int Id { get; set; }
         public int HotelId { get; set; }
         public int RoomId { get; set; }
-        public int GuestId { get; set; }  // Relación con el huésped
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
-        public decimal TotalPrice { get; set; }
-        public string Status { get; set; } = "Pending"; // Estado de la reserva
+        public decimal TotalPrice { get; set; } = 0;
+        public string Status { get; set; } = "Pending";
+        public string? NameContactEmergency { get; set; }
+        public string? PhoneContactEmergency { get; set; }
+        public List<Guest> Guests { get; set; } = new List<Guest>();
 
-        // Relaciones
-        public Hotel Hotel { get; set; }
-        public Room Room { get; set; }
-        public Guest Guest { get; set; }
-        protected Reservation() { }
+        public Hotel Hotel { get; set; } = null!;
+        public Room Room { get; set; } = null!;
 
-        // ✅ Constructor para crear una reserva válida
-        public Reservation(int hotelId, int roomId, int guestId, DateTime checkIn, DateTime checkOut, decimal price)
+        public Reservation() { }
+        public Reservation(int hotelId, int roomId, DateTime checkIn, DateTime checkOut, string nameContactEmergency, string phoneContactEmergency, decimal price)
         {
             if (checkIn >= checkOut)
-                throw new ArgumentException("La fecha de check-in debe ser antes de la fecha de check-out.");
-
+                throw new ArgumentException("Check-in date must be before check-out date.");
+            int night = (int)(checkOut - checkIn).TotalDays;
+            price = CalculateTotalPrice(price, night, 19);
             if (price < 0)
-                throw new ArgumentException("El precio total no puede ser negativo.");
+                throw new ArgumentException("Total price cannot be negative.");
 
             HotelId = hotelId;
             RoomId = roomId;
-            GuestId = guestId;
             CheckInDate = checkIn;
             CheckOutDate = checkOut;
+            NameContactEmergency = nameContactEmergency;
+            PhoneContactEmergency = phoneContactEmergency;
             TotalPrice = price;
             Status = "Pending";
         }
 
-        // ✅ Regla de negocio: Calcular precio total
-        public void CalculateTotalPrice(decimal basePrice, int nights, decimal taxes)
+        public decimal CalculateTotalPrice(decimal basePrice, int nights, decimal taxes)
         {
             if (nights <= 0)
                 throw new ArgumentException("El número de noches debe ser mayor a cero.");
 
-            TotalPrice = (basePrice * nights) + taxes;
+            return TotalPrice = ((basePrice * nights) * taxes / 100) + (basePrice * nights);
         }
 
-        // ✅ Regla de negocio: Confirmar la reserva
+
         public void Confirm()
         {
             if (Status != "Pending")
@@ -59,7 +58,7 @@ namespace HotelBooking.Domain.Entities
             Status = "Confirmed";
         }
 
-        // ✅ Regla de negocio: Cancelar la reserva
+
         public void Cancel()
         {
             if (Status == "Cancelled")

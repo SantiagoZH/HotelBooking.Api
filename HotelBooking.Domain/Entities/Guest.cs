@@ -25,6 +25,6 @@ namespace HotelBooking.Domain.Entities
 
         public string PhoneNumber { get; set; }
 
-        public Reservation Reservation { get; set; }
+        public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
     }
 }

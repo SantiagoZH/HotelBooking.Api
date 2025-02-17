@@ -17,6 +17,7 @@ namespace HotelBooking.Domain.Entities
         public bool IsAvailable { get; set; } = true;
 
         public string Location { get; set; } 
+        public int Capacity { get; set; }
 
         public virtual Hotel? Hotel { get; set; }
     }

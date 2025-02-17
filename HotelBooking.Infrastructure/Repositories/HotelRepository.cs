@@ -35,7 +35,7 @@ public class HotelRepository : IHotelRepository
        
     }
 
-    public async Task UpdateAsync(Hotel hotel)
+    public async Task<bool> UpdateHotelAsync(Hotel hotel)
     {
         var existingHotel = _context.Hotels.FirstOrDefault(h => h.Id == hotel.Id);
         if (existingHotel != null)
@@ -46,9 +46,9 @@ public class HotelRepository : IHotelRepository
             existingHotel.CommissionRate = hotel.CommissionRate;
             existingHotel.IsActive = hotel.IsActive;
         }
-        await _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync() > 0;
 
-        await Task.CompletedTask;
+        //await Task.CompletedTask;
     }
 
     public async Task DeleteAsync(int id)
@@ -62,9 +62,7 @@ public class HotelRepository : IHotelRepository
     }
     public async Task<IEnumerable<Hotel>> GetHotelsByCityAsync(string city)
     {
-        return await  _context.Hotels
-            .Where(h => h.City == city)
-            .ToListAsync();
+        return await _context.Hotels.Where(h => h.City == city && h.IsActive).ToListAsync();
     }
     public async Task<Hotel?> GetHotelByIdAsync(int id)
     {
@@ -80,4 +78,5 @@ public class HotelRepository : IHotelRepository
         await _context.SaveChangesAsync();
         return true;
     }
+  
 }

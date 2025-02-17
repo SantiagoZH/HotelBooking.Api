@@ -11,7 +11,7 @@ namespace HotelBooking.Application.Interfaces
     {
         Task<IEnumerable<Reservation>> GetAllReservationsAsync();
         Task<Reservation?> GetReservationByIdAsync(int id);
-        Task<bool> CreateReservationAsync(Reservation reservation);
+        Task<bool> CreateReservationAsync(int hotelId, int roomId, DateTime checkIn, DateTime checkOut, string nameContactEmergency, string phoneContactEmergency, string customerEmail, List<Guest> guests);
         Task<bool> UpdateReservationAsync(Reservation reservation);
         Task<bool> DeleteReservationAsync(int id);
 

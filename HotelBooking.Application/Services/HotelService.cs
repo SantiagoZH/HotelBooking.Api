@@ -26,4 +26,5 @@ public class HotelService : IHotelService
     {
         return await _hotelRepository.ToggleHotelStatusAsync(id);
     }
+    public async Task<bool> UpdateHotelAsync(Hotel hotel) => await _hotelRepository.UpdateHotelAsync(hotel);
 }

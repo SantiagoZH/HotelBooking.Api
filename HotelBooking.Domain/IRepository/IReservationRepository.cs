@@ -10,6 +10,7 @@ namespace HotelBooking.Application.Interfaces
         Task<IEnumerable<Reservation>> GetAllAsync();
         Task<IEnumerable<Reservation>> GetReservationsByHotelAsync(int hotelId);
         Task<IEnumerable<Reservation>> GetReservationsByGuestAsync(int guestId);
+
         Task AddAsync(Reservation reservation);
         Task UpdateAsync(Reservation reservation);
         Task DeleteAsync(int id);

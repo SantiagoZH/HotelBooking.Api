@@ -31,25 +31,50 @@ namespace HotelBooking.Application.Services
             return await _reservationRepository.GetByIdAsync(id);
         }
 
-        public async Task<bool> CreateReservationAsync(Reservation reservation)
+        public async Task<bool> CreateReservationAsync(int hotelId, int roomId, DateTime checkIn, DateTime checkOut, string nameContactEmergency, string phoneContactEmergency, string customerEmail, List<Guest> guests)
         {
-            var room = await _roomRepository.GetRoomByIdAsync(reservation.RoomId);
+            var room = await _roomRepository.GetRoomByIdAsync(roomId);
             if (room == null || !room.IsAvailable)
             {
                 throw new InvalidOperationException("Room is not available.");
             }
 
-            var guest = await _guestRepository.GetGuestByIdAsync(reservation.GuestId);
-            if (guest == null)
+            var reservation = new Reservation(hotelId, roomId, checkIn, checkOut, nameContactEmergency, phoneContactEmergency, 0);
+
+            // Asociar múltiples huéspedes
+            foreach (var guestDto in guests)
             {
-                throw new InvalidOperationException("Guest not found.");
+                var guest = new Guest
+                {
+                    FirstName = guestDto.FirstName,
+                    LastName = guestDto.LastName,
+                    Gender = guestDto.Gender,
+                    DocumentType = guestDto.DocumentType,
+                    DocumentNumber = guestDto.DocumentNumber,
+                    Email = guestDto.Email,
+                    PhoneNumber = guestDto.PhoneNumber
+                };
+
+                await _guestRepository.AddGuestAsync(guest);
+                reservation.Guests.Add(guest);
             }
 
-            reservation.TotalPrice = CalculateTotalPrice(room.BasePrice, reservation.CheckInDate, reservation.CheckOutDate);
-            reservation.Status = "Confirmed";
-
+            reservation.TotalPrice = room.BasePrice * (checkOut - checkIn).Days;
             await _reservationRepository.AddAsync(reservation);
             return true;
+
+            //Email service disabled
+            var reservationDetails = $"Hotel: {hotelId}\n" +
+                             $"Room: {roomId}\n" +
+                             $"Check-in: {checkIn}\n" +
+                             $"Check-out: {checkOut}\n" +
+                             $"Price: {reservation.TotalPrice}\n" +
+                             $"Emergency Contact: {nameContactEmergency} ({phoneContactEmergency})";
+
+            var emailService = new EmailService();
+            await emailService.SendConfirmationEmailAsync(customerEmail, reservationDetails);
+
+           
         }
 
         public async Task<bool> UpdateReservationAsync(Reservation reservation)
@@ -80,10 +105,6 @@ namespace HotelBooking.Application.Services
             return true;
         }
 
-        private decimal CalculateTotalPrice(decimal basePrice, DateTime checkIn, DateTime checkOut)
-        {
-            int nights = (checkOut - checkIn).Days;
-            return basePrice * nights;
-        }
+      
     }
 }

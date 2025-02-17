@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelBooking.Api.Migrations
 {
     [DbContext(typeof(HotelBookingDbContext))]
-    [Migration("20250213233942_SecondMigration")]
-    partial class SecondMigration
+    [Migration("20250217031451_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -111,12 +111,6 @@ namespace HotelBooking.Api.Migrations
                     b.Property<DateTime>("CheckOutDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("GuestId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("GuestId1")
-                        .HasColumnType("int");
-
                     b.Property<int>("HotelId")
                         .HasColumnType("int");
 
@@ -130,12 +124,15 @@ namespace HotelBooking.Api.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(65,30)");
 
+                    b.Property<string>("nameContactEmergency")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("phoneContactEmergency")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.HasKey("Id");
-
-                    b.HasIndex("GuestId");
-
-                    b.HasIndex("GuestId1")
-                        .IsUnique();
 
                     b.HasIndex("HotelId");
 
@@ -154,6 +151,9 @@ namespace HotelBooking.Api.Migrations
 
                     b.Property<decimal>("BasePrice")
                         .HasColumnType("decimal(65,30)");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
 
                     b.Property<int>("HotelId")
                         .HasColumnType("int");
@@ -179,18 +179,52 @@ namespace HotelBooking.Api.Migrations
                     b.ToTable("Rooms");
                 });
 
+            modelBuilder.Entity("HotelBooking.Domain.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("ReservationGuest", b =>
+                {
+                    b.Property<int>("GuestId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReservationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GuestId", "ReservationId");
+
+                    b.HasIndex("ReservationId");
+
+                    b.ToTable("ReservationGuest");
+                });
+
             modelBuilder.Entity("HotelBooking.Domain.Entities.Reservation", b =>
                 {
-                    b.HasOne("HotelBooking.Domain.Entities.Guest", "Guest")
-                        .WithMany()
-                        .HasForeignKey("GuestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HotelBooking.Domain.Entities.Guest", null)
-                        .WithOne("Reservation")
-                        .HasForeignKey("HotelBooking.Domain.Entities.Reservation", "GuestId1");
-
                     b.HasOne("HotelBooking.Domain.Entities.Hotel", "Hotel")
                         .WithMany()
                         .HasForeignKey("HotelId")
@@ -202,8 +236,6 @@ namespace HotelBooking.Api.Migrations
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Guest");
 
                     b.Navigation("Hotel");
 
@@ -221,9 +253,18 @@ namespace HotelBooking.Api.Migrations
                     b.Navigation("Hotel");
                 });
 
-            modelBuilder.Entity("HotelBooking.Domain.Entities.Guest", b =>
+            modelBuilder.Entity("ReservationGuest", b =>
                 {
-                    b.Navigation("Reservation")
+                    b.HasOne("HotelBooking.Domain.Entities.Guest", null)
+                        .WithMany()
+                        .HasForeignKey("GuestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HotelBooking.Domain.Entities.Reservation", null)
+                        .WithMany()
+                        .HasForeignKey("ReservationId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

@@ -2,6 +2,9 @@
 using HotelBooking.Domain.Entities;
 using HotelBooking.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace HotelBooking.Infrastructure.Repositories
 {
@@ -19,7 +22,7 @@ namespace HotelBooking.Infrastructure.Repositories
             return await _context.Reservations
                 .Include(r => r.Hotel)
                 .Include(r => r.Room)
-                .Include(r => r.Guest)
+                .Include(r => r.Guests) 
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
@@ -28,7 +31,7 @@ namespace HotelBooking.Infrastructure.Repositories
             return await _context.Reservations
                 .Include(r => r.Hotel)
                 .Include(r => r.Room)
-                .Include(r => r.Guest)
+                .Include(r => r.Guests) 
                 .ToListAsync();
         }
 
@@ -36,16 +39,17 @@ namespace HotelBooking.Infrastructure.Repositories
         {
             return await _context.Reservations
                 .Where(r => r.HotelId == hotelId)
-                .Include(r => r.Guest)
+                .Include(r => r.Guests) 
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Reservation>> GetReservationsByGuestAsync(int guestId)
         {
             return await _context.Reservations
-                .Where(r => r.GuestId == guestId)
+                .Where(r => r.Guests.Any(g => g.Id == guestId)) 
                 .Include(r => r.Hotel)
                 .Include(r => r.Room)
+                .Include(r => r.Guests) 
                 .ToListAsync();
         }
 
